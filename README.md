@@ -128,12 +128,12 @@ Start:
  ```
 
 ## 技术亮点 (Technical Highlights)
-- 自举编译器 ：完全使用 Pascal 编写，是学习编译器设计原理的理想工具。
+- 编译器 ：完全使用 Pascal 编写，是学习编译器设计原理的理想工具。
 - 可扩展架构 ：通过修改指令集表（XAsmTable.pas），可轻松扩展支持 ARM、RISC 等新架构。
 - 极小体积可执行文件 ：生成的可执行文件最小仅 444 字节 ，适合底层编程爱好者和极简代码实践。
 
 
-- Self-hosting Compiler: Written in Pascal, making it an excellent learning tool for understanding compiler design.
+- Compiler: Written in Pascal, making it an excellent learning tool for understanding compiler design.
 - Extensible Architecture: Modify the instruction set table (XAsmTable.pas) to support new architectures like ARM or RISC.
 - Minimal Executables: Generate executables as small as 444 bytes , ideal for low-level programming enthusiasts.
 
