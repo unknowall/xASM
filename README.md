@@ -127,16 +127,17 @@ Start:
  ret
  ```
 
-## 扩展与定制
-xASM 的设计目标是灵活性和可扩展性。
-您可以通过修改 XAsmTable.pas 文件中的指令集表，轻松实现对其他架构（如 ARM、RISC 等）的支持。
-此外，xASM 的模块化设计也使其成为学习编译器开发的理想工具。
+## 技术亮点 (Technical Highlights)
+- 自举编译器 ：完全使用 Pascal 编写，xASM 是一个自托管（self-hosting）编译器，是学习编译器设计原理的理想工具。
+- 可扩展架构 ：通过修改指令集表（XAsmTable.pas），可轻松扩展支持 ARM、RISC 等新架构。
+- 极小体积可执行文件 ：生成的可执行文件最小仅 444 字节 ，适合底层编程爱好者和极简代码实践。
 
-The design goal of xASM is flexibility and extensibility. 
-By modifying the instruction set table in the XAsmTable.pas file, you can easily add support for other architectures (such as ARM, RISC, etc.). 
-Additionally, xASM's modular design makes it an ideal tool for learning compiler development.
 
-## 许可证
+- Self-hosting Compiler: Written in Pascal, xASM is a self-hosting compiler, making it an excellent learning tool for understanding compiler design.
+- Extensible Architecture: Modify the instruction set table (XAsmTable.pas) to support new architectures like ARM or RISC.
+- Minimal Executables: Generate executables as small as 444 bytes , ideal for low-level programming enthusiasts.
+
+## 许可证 (License)
 本项目采用 MIT 许可证 ，允许任何人自由使用、修改和分发代码。
 
 This project is licensed under the MIT License, allowing anyone to freely use, modify, and distribute the code.
