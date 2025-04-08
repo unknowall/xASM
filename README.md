@@ -6,6 +6,7 @@ Features:
 - Supports the generation of extremely small executable files (for example, the Hello World example is only 444 bytes).
 - Provides flexible macro definitions and structure support.
 - Easy to extend, making it suitable for learning low-level assembly language and compiler development.
+- Standalone Execution: A single-file compiler with no external dependencies (.NET/VC runtime not required)
 
 # xASM - 32位 x86 汇编语言编译器
 
@@ -16,6 +17,7 @@ xASM 是一个轻量级的 32 位 X86 汇编语言编译器，语法与 BASM 高
 - 支持生成极小体积的可执行文件（例如，Hello World 示例仅 444 字节）。
 - 提供灵活的宏定义和结构体支持。
 - 易于扩展，适合学习底层汇编语言和编译器开发。
+- 独立运行：单文件编译器，无任何外部依赖（无需.NET/VC运行库）
 
 ## 快速开始
 1. 使用编译器编译示例代码
@@ -141,3 +143,19 @@ Start:
 本项目采用 MIT 许可证 ，允许任何人自由使用、修改和分发代码。
 
 This project is licensed under the MIT License, allowing anyone to freely use, modify, and distribute the code.
+
+## 下载
+[Release](https://github.com/unknowall/xASM/release) 
+
+无需安装依赖，**可直接在以下环境运行**：
+   - Windows XP ~ 11
+   - WinPE/WinRE 维护系统
+   - 其他精简版Windows环境
+
+<br>
+
+No dependencies required. Runs directly in:
+   - Windows XP to 11
+   - WinPE/WinRE maintenance systems
+   - Other stripped-down Windows environments
+
