@@ -1,12 +1,24 @@
-## xASM a 32bit x86 ASM Compiler
+# xASM a 32bit x86 ASM Compiler
+# xASM - 32位 x86 汇编语言编译器
 
-这是一个32位X86汇编语言编译器，基本语法与BASM一致，可编译出实模式/保护模式的windows可执行文件 (.com/.exe)，或代码块
+xASM 是一个轻量级的 32 位 X86 汇编语言编译器，语法与 BASM 高度兼容。它能够生成极小体积的 Windows 可执行文件（`.com` 或 `.exe`），并支持实模式和保护模式下的代码编译。
+通过修改指令集表（位于 `XAsmTable.pas`），还可以轻松扩展支持其他架构（如 ARM、RISC 等）。
 
-指令集位于 XAsmTable.pas ， 修改指令集可相对容易的实现 arm / risc / misc 汇编编译器。
+**特点：**
+- 支持生成极小体积的可执行文件（例如，Hello World 示例仅 444 字节）。
+- 提供灵活的宏定义和结构体支持。
+- 易于扩展，适合学习底层汇编语言和编译器开发。
 
-可以编译出极小的可执行文件，如 HelloWorld.asm ，编译后的windows可执行文件仅为 444 字节。
+## 快速开始
+1. 使用编译器编译示例代码
+>./xasm HelloWorld.asm<br>
+
+2. 运行生成的可执行文件
+>./HelloWorld.exe<br>
 
 ## 示例代码：HelloWorld.asm
+说明：
+此示例展示了如何调用 Windows API (MessageBoxA) 显示一个消息框。编译后生成的 .exe 文件大小仅为 444 字节。
 ```asm
 .FILEALIGN 4
 .IMAGEBASE $400000
@@ -29,6 +41,8 @@ Start:
 ```
 
 ## 示例代码：API.asm
+说明：
+此示例展示了如何动态加载 DLL 并调用多个 API。编译后生成的 .exe 文件大小为 516 字节。
 ```asm
 .FILEALIGN 4
 
@@ -56,6 +70,8 @@ Start:
  ```
 
 ## 示例代码：Option.asm
+说明：
+此示例展示了如何通过配置选项生成不同类型的可执行文件（如最小模式或 DLL）。
 ```asm
 .FILEALIGN 4 //文件对齐
 .IMAGEBASE $400000 //影象文件基址
@@ -69,6 +85,8 @@ Start:
  ```
 
 ## 示例代码：m-s.asm
+说明：
+此示例展示了如何定义结构体和宏，并在代码中使用它们。
 ```asm
 .FILEALIGN 4
 
@@ -96,3 +114,11 @@ Start:
  macro1 param1=$100,param2=1
  ret
  ```
+
+## 扩展与定制
+xASM 的设计目标是灵活性和可扩展性。
+您可以通过修改 XAsmTable.pas 文件中的指令集表，轻松实现对其他架构（如 ARM、RISC 等）的支持。
+此外，xASM 的模块化设计也使其成为学习编译器开发的理想工具。
+
+## 许可证
+本项目采用 MIT 许可证 ，允许任何人自由使用、修改和分发代码。
