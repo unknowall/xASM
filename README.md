@@ -145,7 +145,7 @@ Start:
 This project is licensed under the MIT License, allowing anyone to freely use, modify, and distribute the code.
 
 ## 下载
-[Release](https://github.com/unknowall/xASM/release) 
+[Release](https://github.com/unknowall/xASM/releases/)
 
 无需安装依赖，**可直接在以下环境运行**：
    - Windows XP ~ 11
