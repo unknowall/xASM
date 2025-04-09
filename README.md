@@ -129,6 +129,47 @@ Start:
  ret
  ```
 
+## 示例代码：const.asm
+说明：
+此示例展示了常量定义、条件编译和基本算术运算。 .REPEAT 与 .ENDREP 在编译时会将块内代码重复生成 CONST2($100) 次.
+
+This example demonstrates constant definitions, conditional compilation, and basic arithmetic operations. 
+
+The .REPEAT and .ENDREP directives generate the enclosed code block CONST2 ($100) times during compilation.
+```asm
+// --- 常量与数据定义 ---
+// 本文件编译后 1,104 Bytes
+.FILEALIGN 4        // 设置文件对齐方式为4字节
+.ALIGN 4            // 代码段对齐4字节
+
+@CONST1 VAR $1      // 定义常量1（数值型）
+@CONST2 VAR $100    // 定义常量2（数值型）
+@CONST3 VAR "This Is Text2" // 字符串常量（未被使用）
+txt1&& DB 'Hello World!!'  // 字符串数据（未被使用）
+var1&& DD $0        // 初始化双字变量为0
+
+// --- 代码段 ---
+showtxt:
+ jmp SHORT end      // 跳过中间代码
+
+Start:
+ DB $90,$90         // 两个NOP空操作指令
+ .IFDEF var1>=$100  // 条件编译检查（因var1=0实际不成立）
+ jmp SHORT showtxt
+ .ENDIF
+ int 3              // 触发调试中断（用于调试）
+
+end:
+ mov eax, [var1]    // eax = 0
+ mov ebx, @CONST1   // ebx = 1
+ add eax, ebx       // eax = 1
+ .REPEAT @CONST2    // 编译时展开$100次循环
+ add eax, @CONST1   // 每次循环eax += 1
+ .ENDREP
+ mov [var1], eax    // 最终var1 = 1 + 100*1 = 101
+ ret
+ ```
+
 ## 技术亮点 (Technical Highlights)
 - 编译器 ：完全使用 Pascal 编写，是学习编译器设计原理的理想工具。
 - 可扩展架构 ：通过修改指令集表（XAsmTable.pas），可轻松扩展支持 ARM、RISC 等新架构。
