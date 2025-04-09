@@ -757,7 +757,7 @@ begin
     CallMacroNum := 0;
     CallMacroFromLineNum := 0;
     Line_Diff := 0;
-    CompileStep(Src, 0, Src.Count - 1, Params0); // Ô¤±àÒë
+    CompileStep(Src, 0, Src.Count - 1, Params0); // é¢„ç¼–è¯‘
     // IMPORT TABLE
     if FTmport then
       BuildImportTable;
@@ -792,7 +792,7 @@ begin
     CallMacroFromLineNum := 0;
     Params0.Clear;
     Line_Diff := 0;
-    CompileStep(Src, 0, Src.Count - 1, Params0); // Õý±àÒë
+    CompileStep(Src, 0, Src.Count - 1, Params0); // æ­£ç¼–è¯‘
     CodeLen := Src.Count - 1;
   FINALLY
     Params0.Free;
@@ -2858,7 +2858,7 @@ var
                       // SetString( Cmd, p, DWORD(s)-DWORD(p) );
                       // if StrComp_NoCase( PAnsiChar( Cmd ), 'END' ) = 0 then
                       if StrInL(p, DWORD(S) - DWORD(p), ['END']) then
-                      begin // âñ? íàøåëñÿ êîíå?ìàêðîñ?
+                      begin
                         if (SkipLevel <= 1) and (Step = 1) then
                           MacroList.AddObject(AName, j or (Line - 1) shl 16);
                         break;
@@ -2937,10 +2937,10 @@ var
                       else if StrInL(p, DWORD(S) - DWORD(p), ['END']) then
                       begin
                         StructList.Objects[StructList.Count - 1] := j;
-                        break; // êîíå?îïðåäåëåíèÿ ñòðóêòóð?
+                        break;
                       end
                       else
-                      begin // çíà÷èò ýò?âëîæåííàÿ ñòðóêòóð?
+                      begin
                         k := StructList.IndexOfStrL_NoCase(p,
                           DWORD(S) - DWORD(p));
                         if k < 0 then
@@ -3816,9 +3816,9 @@ var
   end;
 
   procedure FixImportRVA(pImpDir: PImageImportDecriptor; BaseRVA: Cardinal);
-  // ½«Name, FirstThunk, pThunkÖµÐÞÕýÎªRVA!
-  // BaseRVA: µ¼Èë±íµÄRVA
-  // pImpDir: Ö¸Ïòµ¼Èë±íµÄÖ¸Õë
+  // å°†Name, FirstThunk, pThunkå€¼ä¿®æ­£ä¸ºRVA!
+  // BaseRVA: å¯¼å…¥è¡¨çš„RVA
+  // pImpDir: æŒ‡å‘å¯¼å…¥è¡¨çš„æŒ‡é’ˆ
   var
     pThunk: PDWORD;
     BaseAdd: Pointer;
@@ -4061,12 +4061,12 @@ var
       FuncCount := High(FuncName) - Low(FuncName) + 1;
       for i := Low(FuncName) to High(FuncName) do
         Inc(lFuncName, Length(FuncName[i]) + 1);
-      // Ìî³äµ¼Èë±í
+      // å¡«å……å¯¼å…¥è¡¨
       PEImpDir := Pointer(DWORD(IMPTABLES) + Sizeof(TImageImportDecriptor) * n);
       PEImpDir^.Union.OriginalFirstThunk := 0;
       PEImpDir^.TimeDateStamp := $0;
       PEImpDir^.ForwarderChain := $0;
-      // Name, FirstThunkµÄÖµÊÇOffset,²»ÊÇRVA!
+      // Name, FirstThunkçš„å€¼æ˜¯Offset,ä¸æ˜¯RVA!
       PEImpDir^.Name := IMPSIZE + 4 * (FuncCount + 1);
       PEImpDir^.FirstThunk := IMPSIZE;
       pDllName := PtrAdd(IMPTABLES, PEImpDir^.Name);
@@ -4077,14 +4077,14 @@ var
       for i := Low(FuncName) to High(FuncName) do
       begin
         pThunk^ := L;
-        Inc(pThunk); // pThunkµÄÖµÊÇOffset,²»ÊÇRVA!
+        Inc(pThunk); // pThunkçš„å€¼æ˜¯Offset,ä¸æ˜¯RVA!
         pFuncName^.Hint := 0;
         CopyMemory(@pFuncName^.Name[0], FuncName[i], Length(FuncName[i]));
         L2 := Length(FuncName[i]) + Sizeof(TImageImportByName) - 1;
         pFuncName := PtrAdd(pFuncName, L2);
         Inc(L, L2);
       end;
-      // ¼ÆËãµ¼Èë±í´óÐ¡
+      // è®¡ç®—å¯¼å…¥è¡¨å¤§å°
       IMPSIZE := IMPSIZE + lDllName + lFuncName + 2 * FuncCount + 4 *
         (FuncCount + 1);
     end;
