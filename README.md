@@ -1,4 +1,5 @@
 # xASM a 32bit x86 ASM Compiler
+[![MIT License](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT) [![Release Version](https://img.shields.io/github/v/release/unknowall/xASM)](https://github.com/unknowall/xASM/releases) [![Platform Support](https://img.shields.io/badge/Platform-Windows%20XP~11-blue)](https://learn.microsoft.com/windows)
 
 xASM is a lightweight 32-bit X86 assembly language compiler that is highly compatible with BASM syntax. It is capable of generating extremely small Windows executable files (.com or .exe) and supports code compilation in both real mode and protected mode. By modifying the instruction set table (located in XAsmTable.pas), it can easily be extended to support other architectures (such as ARM, RISC, etc.).
 
