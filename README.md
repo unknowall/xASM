@@ -166,7 +166,7 @@ end:
  .REPEAT @CONST2    // 编译时展开$100次循环
  add eax, @CONST1   // 每次循环eax += 1
  .ENDREP
- mov [var1], eax    // 最终var1 = 1 + 100*1 = 101
+ mov [var1], eax    // 最终var1 = 1 + $100*1 = $101
  ret
  ```
 
