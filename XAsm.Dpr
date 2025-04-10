@@ -53,23 +53,26 @@ var
 begin
   LStr := ExtractFileName(ParamStr(0));
   WriteLn('Usage: ', LStr,
-    ' [-h] [-c] [-n] [-s] [-d] [-b:ImageBase] InputFile OutputFile');
+    ' [-h] [-c] [-n] [-s] [-d] [-b:ImageBase] InputFile [-o OutputFile]');
   WriteLn('  -h             Show This');
   WriteLn('  -c             Compiler BIN Mode(.com)');
   WriteLn('  -n             Set SubSystem to CUI');
   WriteLn('  -d             Compiler DLL File');
   WriteLn('  -s             Tiny Pe File');
+  WriteLn('  -o             Output File');
   WriteLn('  -b:ImageBase   image base in hexadecimal string');
   WriteLn;
   WriteLn('Examples:');
-  WriteLn('1) ', LStr, ' -n Test.asm Test.exe');
   WriteLn;
-  WriteLn('2) ', LStr, ' -b:1F000000 -n Test.asm Test.exe');
+  WriteLn('1) ', LStr, ' Test.asm');
   WriteLn;
-  WriteLn('3) ', LStr, ' -s -p Tiny.asm Tiny.exe');
+  WriteLn('2) ', LStr, ' -n Test.asm -o Test.exe');
   WriteLn;
+  WriteLn('3) ', LStr, ' -b:1F000000 -n Test.asm -o Test.exe');
   WriteLn;
-  Halt(0);
+  WriteLn('4) ', LStr, ' -s Tiny.asm -o Tiny.exe');
+  WriteLn;
+  ExitProcess(0);
 end;
 
 function ProcessCmdLine: Boolean;
@@ -88,48 +91,50 @@ begin
   while LI <= ParamCount do
   begin
     LPar := ParamStr(LI);
-    LUpArg := UpperCase(LPar);
+    //LUpArg := UpperCase(LPar);
+    LUpArg := LPar;
+    Inc(LI);
+    //WriteLn('Param: '+LUpArg);
     if LUpArg[1] = '-' then
     begin
       if Length(LUpArg) = 1 then
-        Break;
+        Continue;
       case LUpArg[2] of
-        'C':
+        'c','C':
           BinMode := True;
-        'N':
+        'n','N':
           CuiMode := True;
-        'S':
+        's','S':
           TinyPe := True;
-        'D':
+        'd','D':
           DllMode := True;
-        'B':
+        'b','B':
           begin
-            if Length(LUpArg) < 4 then
-              Break;
-            if LUpArg[3] <> ':' then
-              Break;
+            if Length(LUpArg) < 4 then Continue;
+            if LUpArg[3] <> ':' then Continue;
             if LUpArg[2] = 'B' then
             begin
               ReqImageBase := HexToInt(Copy(LUpArg, 4, MaxInt));
-              if ReqImageBase = 0 then
-                Break;
+              if ReqImageBase = 0 then Continue;
             end
-            else
-              OutputFileName := Copy(LPar, 4, MaxInt);
+          end;
+        'o', 'O':
+          begin
+            if Length(ParamStr(LI)) < 4 then Continue;
+            OutputFileName := ParamStr(LI);
+            Inc(LI);
           end;
       else
-        Break;
+        Continue;
       end;
     end
     else
     begin
       InputFileName := LPar;
-      //Inc(LI);
-      Break;
+      Continue;
     end;
-    Inc(LI);
   end;
-  OutputFileName := ParamStr(ParamCount);
+
   if Length(OutputFileName) = 0 then
     if BinMode then
       OutputFileName := Copy(InputFileName, 1, Pos('.', InputFileName)) + 'com'
@@ -140,12 +145,21 @@ begin
 end;
 
 begin
+
   About;
-  if not ProcessCmdLine then
-    Usage;
-  // InputFileName:='d:\xasm\api.asm';
-  // OutputFileName:='d:\xasm\api.exe';
+  if not ProcessCmdLine then Usage;
+
+  // InputFileName:='test.asm';
+  // OutputFileName:='test.exe';
   // ReqImageBase:=$00400000;
+
+  WriteLn('-----------------------------------------------------------');
+  WriteLn;
+  WriteLn(InputFileName+' >> '+OutputFileName);
+  WriteLn;
+  var TimeLess: Integer;
+  TimeLess := GetTickCount;
+
   Compler.Create;
   Compler.ImageBase := ReqImageBase;
   if CuiMode then
@@ -154,19 +168,17 @@ begin
     Compler.PeMode := IMAGE_SUBSYSTEM_WINDOWS_GUI;
   Compler.TinyPe := TinyPe;
   Compler.CompileFromFile(InputFileName);
+
   if Compler.Size > 0 then
   begin
     if BinMode then
       Compler.SaveBin2File(OutputFileName)
     else
       Compler.SaveExe2File(OutputFileName);
-
-    WriteLn('-----------------------------------------------------------');
-    WriteLn;
-    WriteLn(InputFileName+' >> '+OutputFileName);
-    WriteLn;
-    WriteLn(Compler.LineCount, ' Lines, ', Compler.Size, ' Bytes Code, ', Compler.DatSize, ' Bytes Data, ', Compler.Errs, ' Errors.');
-    WriteLn;
   end;
 
+  WriteLn(Compler.LineCount, ' Total Lines, ', Compler.Size, ' Bytes Code, ', Compler.DatSize, ' Bytes Data, ', Compler.Errs, ' Errors.');
+  WriteLn;
+  WriteLn('Compile time: ',GetTickCount - TimeLess, ' ms');
+  WriteLn;
 end.

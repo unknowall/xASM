@@ -105,7 +105,7 @@ type
     Errors: Integer;
     Line_Diff: Integer;
     FSrc: PFastStrListEx;
-    procedure Error(Line: Integer; const Msg: AnsiString);
+    procedure Error(Line: Integer; const Msg: String);
     property Src: PFastStrListEx read FSrc;
   public
     Memory: Pointer;
@@ -318,7 +318,7 @@ end;
 procedure SaveBinAsStr(const Filename: AnsiString; M: PByte; Len: Integer);
 var
   SL: PFastStrListEx;
-  S: String;
+  S: AnsiString;
   n: Integer;
 begin
   SL := NewFastStrListEx;
@@ -670,6 +670,14 @@ begin
   while i <= Length(Txt) do
   begin
     CASE Txt[i] OF
+      ';':
+        begin
+          while (i <= Length(Txt)) and (Txt[i] <> #13) do
+          begin
+            Txt[i] := ' ';
+            Inc(i);
+          end;
+        end;
       '/':
         if Txt[i + 1] = '/' then
         begin
@@ -757,7 +765,7 @@ begin
     CallMacroNum := 0;
     CallMacroFromLineNum := 0;
     Line_Diff := 0;
-    CompileStep(Src, 0, Src.Count - 1, Params0); // È¢ÑÁºñËØë
+    CompileStep(Src, 0, Src.Count - 1, Params0); // ‘§±‡“Î
     // IMPORT TABLE
     if FTmport then
       BuildImportTable;
@@ -792,7 +800,7 @@ begin
     CallMacroFromLineNum := 0;
     Params0.Clear;
     Line_Diff := 0;
-    CompileStep(Src, 0, Src.Count - 1, Params0); // Ê≠£ÁºñËØë
+    CompileStep(Src, 0, Src.Count - 1, Params0); // ’˝±‡“Î
     CodeLen := Src.Count - 1;
   FINALLY
     Params0.Free;
@@ -1853,16 +1861,14 @@ var
                                 if Step = 1 then
                                   Exit
                                 else
-                                  Error(Line, 'Too long jump: ' +
-                                    Int2Str(ActualJmpOffset));
+                                  Error(Line, 'Too long jump: ' + Int2Str(ActualJmpOffset));
                           2:
                             if (ActualJmpOffset < -32768) or
                               (ActualJmpOffset > 32767) then
                               if Step = 1 then
                                 Exit
                               else
-                                Error(Line,
-                                  'Too long jump' + Int2Str(ActualJmpOffset));
+                                Error(Line, 'Too long jump' + Int2Str(ActualJmpOffset));
                         END;
 {$ENDIF}
                         if Step = 1 then
@@ -2961,7 +2967,7 @@ var
                       end;
                     end;
                   end;
-                2: // EQU
+                2: // VAR
                   if SkipLevel <= 1 then
                   begin
                     SkipSp;
@@ -3565,9 +3571,9 @@ var
     inherited;
   end;
 
-  procedure TXASM.Error(Line: Integer; const Msg: AnsiString);
+  procedure TXASM.Error(Line: Integer; const Msg: String);
   var
-    e: String;
+    e: AnsiString;
   begin
     e := Format('%.05d', [Line + Line_Diff + 1]);
     if CallingMacroFromLine <> 0 then
@@ -3816,9 +3822,9 @@ var
   end;
 
   procedure FixImportRVA(pImpDir: PImageImportDecriptor; BaseRVA: Cardinal);
-  // Â∞ÜName, FirstThunk, pThunkÂÄº‰øÆÊ≠£‰∏∫RVA!
-  // BaseRVA: ÂØºÂÖ•Ë°®ÁöÑRVA
-  // pImpDir: ÊåáÂêëÂØºÂÖ•Ë°®ÁöÑÊåáÈíà
+  // Ω´Name, FirstThunk, pThunk÷µ–ﬁ’˝Œ™RVA!
+  // BaseRVA: µº»Î±ÌµƒRVA
+  // pImpDir: ÷∏œÚµº»Î±Ìµƒ÷∏’Î
   var
     pThunk: PDWORD;
     BaseAdd: Pointer;
@@ -4061,12 +4067,12 @@ var
       FuncCount := High(FuncName) - Low(FuncName) + 1;
       for i := Low(FuncName) to High(FuncName) do
         Inc(lFuncName, Length(FuncName[i]) + 1);
-      // Â°´ÂÖÖÂØºÂÖ•Ë°®
+      // ÃÓ≥‰µº»Î±Ì
       PEImpDir := Pointer(DWORD(IMPTABLES) + Sizeof(TImageImportDecriptor) * n);
       PEImpDir^.Union.OriginalFirstThunk := 0;
       PEImpDir^.TimeDateStamp := $0;
       PEImpDir^.ForwarderChain := $0;
-      // Name, FirstThunkÁöÑÂÄºÊòØOffset,‰∏çÊòØRVA!
+      // Name, FirstThunkµƒ÷µ «Offset,≤ª «RVA!
       PEImpDir^.Name := IMPSIZE + 4 * (FuncCount + 1);
       PEImpDir^.FirstThunk := IMPSIZE;
       pDllName := PtrAdd(IMPTABLES, PEImpDir^.Name);
@@ -4077,14 +4083,14 @@ var
       for i := Low(FuncName) to High(FuncName) do
       begin
         pThunk^ := L;
-        Inc(pThunk); // pThunkÁöÑÂÄºÊòØOffset,‰∏çÊòØRVA!
+        Inc(pThunk); // pThunkµƒ÷µ «Offset,≤ª «RVA!
         pFuncName^.Hint := 0;
         CopyMemory(@pFuncName^.Name[0], FuncName[i], Length(FuncName[i]));
         L2 := Length(FuncName[i]) + Sizeof(TImageImportByName) - 1;
         pFuncName := PtrAdd(pFuncName, L2);
         Inc(L, L2);
       end;
-      // ËÆ°ÁÆóÂØºÂÖ•Ë°®Â§ßÂ∞è
+      // º∆À„µº»Î±Ì¥Û–°
       IMPSIZE := IMPSIZE + lDllName + lFuncName + 2 * FuncCount + 4 *
         (FuncCount + 1);
     end;
