@@ -20,6 +20,21 @@ xASM 是一个轻量级的 32 位 X86 汇编语言编译器，语法与 BASM 高
 - 易于扩展，适合学习底层汇编语言和编译器开发。
 - 独立运行：单文件编译器，无任何外部依赖（无需.NET/VC运行库）
 
+**编译20423行代码仅需 78 ms (AMD Ryzen3 3550h):**
+```asm
+xAsm v0.03 - unknowall, sgfree@hotmail.com
+
+Source: http://github.com/unknowall/xAsm
+
+-----------------------------------------------------------
+
+TestPC.asm >> TestPC.exe
+
+20423 Total Lines, 102124 Bytes Code, 0 Bytes Data, 0 Errors.
+
+Compile time: 78 ms
+```
+
 ## 快速开始
 1. 使用编译器编译示例代码
 >./xasm HelloWorld.asm<br>
