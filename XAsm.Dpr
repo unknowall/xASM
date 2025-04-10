@@ -41,7 +41,7 @@ end;
 procedure About;
 begin
   WriteLn;
-  WriteLn('xAsm v0.02 - unknowall, sgfree@hotmail.com');
+  WriteLn('xAsm v0.03 - unknowall, sgfree@hotmail.com');
   WriteLn;
   WriteLn('Source: http://github.com/unknowall/xAsm');
   WriteLn;
@@ -124,18 +124,19 @@ begin
     else
     begin
       InputFileName := LPar;
-      Inc(LI);
+      //Inc(LI);
       Break;
     end;
     Inc(LI);
   end;
-//  OutputFileName := ParamStr(ParamCount);
+  OutputFileName := ParamStr(ParamCount);
   if Length(OutputFileName) = 0 then
     if BinMode then
       OutputFileName := Copy(InputFileName, 1, Pos('.', InputFileName)) + 'com'
     else
       OutputFileName := Copy(InputFileName, 1, Pos('.', InputFileName)) + 'exe';
-  Result := (LI - 1 = ParamCount) and (Length(InputFileName) > 0);
+  //Result := (LI - 1 = ParamCount) and (Length(InputFileName) > 0);
+  Result := (Length(OutputFileName) > 0) and (Length(InputFileName) > 0);
 end;
 
 begin
