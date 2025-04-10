@@ -160,8 +160,12 @@ begin
       Compler.SaveBin2File(OutputFileName)
     else
       Compler.SaveExe2File(OutputFileName);
-    WriteLn(Compler.LineCount, ' Lines, ', Compler.Size, ' Bytes Code, ',
-      Compler.DatSize, ' Bytes Data, ', Compler.Errs, ' Errors.');
+
+    WriteLn('-----------------------------------------------------------');
+    WriteLn;
+    WriteLn(InputFileName+' >> '+OutputFileName);
+    WriteLn;
+    WriteLn(Compler.LineCount, ' Lines, ', Compler.Size, ' Bytes Code, ', Compler.DatSize, ' Bytes Data, ', Compler.Errs, ' Errors.');
     WriteLn;
   end;
 
