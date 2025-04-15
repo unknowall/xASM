@@ -187,7 +187,7 @@ begin
   WriteLn('Summary:');
   WriteLn;
   if (Compler.Errs = 0) then
-    WriteLn('   ',Compler.LineCount, ' Total Lines, ', Compler.Size, ' Bytes Code, ', Compler.DatSize, ' Bytes Data')
+    WriteLn('    ',Compler.LineCount, ' Total Lines, ', Compler.Size, ' Bytes Code, ', Compler.DatSize, ' Bytes Data')
   else
     WriteLn('    Total Errors: ',Compler.Errs);
 
