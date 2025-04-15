@@ -35,6 +35,35 @@ TestPC.asm >> TestPC.exe
 
 Compile time: 78 ms
 ```
+**详细的错误提示**
+```asm
+xAsm 0.04
+
+Sources: http://github.com/unknowall/xAsm
+
+Maintainer: unknowall, sgfree@hotmail.com
+
+-----------------------------------------------------------
+
+Compiling:
+
+   HelloWorlderr.asm >> HelloWorlderr.exe
+
+Errors:
+
+   Line 00007: Unterminated string
+   Line 00011(18): Parameter title1 not found
+   Line 00011(18): Operands are not matching to instruction op
+   Line 00013(18): Parameter handle1 not found
+   Line 00013(18): Operands are not matching to instruction op
+   Line 00014(18): Waiting for ']'
+
+Summary:
+
+    Total Errors: 6
+
+    Compile time: 0 ms
+```
 
 ## 快速开始
 1. 使用编译器编译示例代码
