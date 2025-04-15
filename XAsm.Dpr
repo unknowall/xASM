@@ -41,9 +41,11 @@ end;
 procedure About;
 begin
   WriteLn;
-  WriteLn('xAsm v0.03 - unknowall, sgfree@hotmail.com');
+  WriteLn('xAsm 0.04 ');
   WriteLn;
-  WriteLn('Source: http://github.com/unknowall/xAsm');
+  WriteLn('Sources: http://github.com/unknowall/xAsm');
+  WriteLn;
+  WriteLn('Maintainer: unknowall, sgfree@hotmail.com');
   WriteLn;
 end;
 
@@ -155,7 +157,9 @@ begin
 
   WriteLn('-----------------------------------------------------------');
   WriteLn;
-  WriteLn(InputFileName+' >> '+OutputFileName);
+  WriteLn('Compiling:');
+  WriteLn;
+  WriteLn('   '+InputFileName+' >> '+OutputFileName);
   WriteLn;
   var TimeLess: Integer;
   TimeLess := GetTickCount;
@@ -169,7 +173,9 @@ begin
   Compler.TinyPe := TinyPe;
   Compler.CompileFromFile(InputFileName);
 
-  if Compler.Size > 0 then
+  TimeLess := GetTickCount - TimeLess;
+
+  if (Compler.Size > 0) and (Compler.Errs = 0) then
   begin
     if BinMode then
       Compler.SaveBin2File(OutputFileName)
@@ -177,8 +183,15 @@ begin
       Compler.SaveExe2File(OutputFileName);
   end;
 
-  WriteLn(Compler.LineCount, ' Total Lines, ', Compler.Size, ' Bytes Code, ', Compler.DatSize, ' Bytes Data, ', Compler.Errs, ' Errors.');
   WriteLn;
-  WriteLn('Compile time: ',GetTickCount - TimeLess, ' ms');
+  WriteLn('Summary:');
+  WriteLn;
+  if (Compler.Errs = 0) then
+    WriteLn('   ',Compler.LineCount, ' Total Lines, ', Compler.Size, ' Bytes Code, ', Compler.DatSize, ' Bytes Data')
+  else
+    WriteLn('    Total Errors: ',Compler.Errs);
+
+  WriteLn;
+  WriteLn('    Compile time: ',TimeLess, ' ms');
   WriteLn;
 end.
