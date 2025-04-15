@@ -128,6 +128,7 @@ type
   protected
     Hints: array of TListHint;
     RebuildHints: Boolean;
+    bCompileError: Boolean;
     procedure ClearHints;
   public
     // procedure SetSrc( const NewSrcText: String; DoClearHints: Boolean );
@@ -765,7 +766,8 @@ begin
     CallMacroNum := 0;
     CallMacroFromLineNum := 0;
     Line_Diff := 0;
-    CompileStep(Src, 0, Src.Count - 1, Params0); // Ô¤±àÒë
+    CompileStep(Src, 0, Src.Count - 1, Params0); // é¢„ç¼–è¯‘
+    if Errors>0 then exit;
     // IMPORT TABLE
     if FTmport then
       BuildImportTable;
@@ -800,7 +802,7 @@ begin
     CallMacroFromLineNum := 0;
     Params0.Clear;
     Line_Diff := 0;
-    CompileStep(Src, 0, Src.Count - 1, Params0); // Õı±àÒë
+    CompileStep(Src, 0, Src.Count - 1, Params0); // æ­£ç¼–è¯‘
     CodeLen := Src.Count - 1;
   FINALLY
     Params0.Free;
@@ -3575,11 +3577,17 @@ var
   var
     e: AnsiString;
   begin
+    if not bCompileError then
+    begin
+      bCompileError := true;
+      WriteLn('Errors: ');
+      WriteLn;
+    end;
     e := Format('%.05d', [Line + Line_Diff + 1]);
     if CallingMacroFromLine <> 0 then
       e := e + '(' + Int2Str(CallingMacroFromLine + Line_Diff + 1) + ')';
     // if MessageBox( 0, PAnsiChar( e + ': ' + Msg ),nil, MB_OKCANCEL ) = ID_CANCEL then Halt;
-    WriteLn('Line ' + e + ': ' + Msg);
+    WriteLn('   Line ' + e + ': ' + Msg);
     Inc(Errors);
   end;
 
@@ -3822,9 +3830,9 @@ var
   end;
 
   procedure FixImportRVA(pImpDir: PImageImportDecriptor; BaseRVA: Cardinal);
-  // ½«Name, FirstThunk, pThunkÖµĞŞÕıÎªRVA!
-  // BaseRVA: µ¼Èë±íµÄRVA
-  // pImpDir: Ö¸Ïòµ¼Èë±íµÄÖ¸Õë
+  // å°†Name, FirstThunk, pThunkå€¼ä¿®æ­£ä¸ºRVA!
+  // BaseRVA: å¯¼å…¥è¡¨çš„RVA
+  // pImpDir: æŒ‡å‘å¯¼å…¥è¡¨çš„æŒ‡é’ˆ
   var
     pThunk: PDWORD;
     BaseAdd: Pointer;
@@ -4067,12 +4075,12 @@ var
       FuncCount := High(FuncName) - Low(FuncName) + 1;
       for i := Low(FuncName) to High(FuncName) do
         Inc(lFuncName, Length(FuncName[i]) + 1);
-      // Ìî³äµ¼Èë±í
+      // å¡«å……å¯¼å…¥è¡¨
       PEImpDir := Pointer(DWORD(IMPTABLES) + Sizeof(TImageImportDecriptor) * n);
       PEImpDir^.Union.OriginalFirstThunk := 0;
       PEImpDir^.TimeDateStamp := $0;
       PEImpDir^.ForwarderChain := $0;
-      // Name, FirstThunkµÄÖµÊÇOffset,²»ÊÇRVA!
+      // Name, FirstThunkçš„å€¼æ˜¯Offset,ä¸æ˜¯RVA!
       PEImpDir^.Name := IMPSIZE + 4 * (FuncCount + 1);
       PEImpDir^.FirstThunk := IMPSIZE;
       pDllName := PtrAdd(IMPTABLES, PEImpDir^.Name);
@@ -4083,14 +4091,14 @@ var
       for i := Low(FuncName) to High(FuncName) do
       begin
         pThunk^ := L;
-        Inc(pThunk); // pThunkµÄÖµÊÇOffset,²»ÊÇRVA!
+        Inc(pThunk); // pThunkçš„å€¼æ˜¯Offset,ä¸æ˜¯RVA!
         pFuncName^.Hint := 0;
         CopyMemory(@pFuncName^.Name[0], FuncName[i], Length(FuncName[i]));
         L2 := Length(FuncName[i]) + Sizeof(TImageImportByName) - 1;
         pFuncName := PtrAdd(pFuncName, L2);
         Inc(L, L2);
       end;
-      // ¼ÆËãµ¼Èë±í´óĞ¡
+      // è®¡ç®—å¯¼å…¥è¡¨å¤§å°
       IMPSIZE := IMPSIZE + lDllName + lFuncName + 2 * FuncCount + 4 *
         (FuncCount + 1);
     end;
